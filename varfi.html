@@ -1,0 +1,252 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VARFI | Stories for Everyone</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:#0b0b14;color:white;line-height:1.6}
+header{padding:18px 7%;background:#151522;display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap;border-bottom:1px solid #34304b}
+.logo{font-size:30px;font-weight:900;letter-spacing:3px;color:#a78bfa}
+nav{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+a{color:#c4b5fd;text-decoration:none}
+button{cursor:pointer;font:inherit;border:0;border-radius:8px;padding:10px 16px;background:#8b5cf6;color:white}
+button:hover{background:#a78bfa}
+nav a{color:white}
+.hero{text-align:center;padding:75px 20px;background:radial-gradient(ellipse at top,#39205e,#0b0b14 70%)}
+.hero h1{font-size:clamp(38px,7vw,65px);line-height:1.15;margin:15px 0}
+.hero h1 span{color:#a78bfa}
+.hero p{max-width:650px;margin:15px auto 25px;color:#c1c1d1}
+section{padding:45px 7%}
+h2{font-size:28px;margin-bottom:18px}
+.tools{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0}
+input,textarea,select{width:100%;padding:12px;background:#10101d;color:white;border:1px solid #45405e;border-radius:8px;margin:6px 0 14px}
+.tools input{flex:1;min-width:180px;margin:0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px}
+.card,.panel{background:#171725;border:1px solid #34304b;border-radius:13px;padding:22px;overflow-wrap:anywhere}
+.cover{height:115px;display:grid;place-items:center;font-size:45px;background:linear-gradient(135deg,#44206e,#762d66);border-radius:9px;margin-bottom:16px}
+.card h3{font-size:21px;margin:7px 0}
+.card p{white-space:pre-wrap;color:#c3c3d3;margin:10px 0}
+.meta{font-size:13px;color:#c4b5fd}
+.like{margin-top:12px;background:#302442}
+.like.liked{background:#b83269}
+.panel{max-width:650px;margin:20px auto}
+label{display:block;font-size:14px}
+.hidden{display:none!important}
+.note{color:#bcbcd0;font-size:13px;margin-top:10px}
+#status{color:#c4b5fd;margin-top:12px}
+footer{text-align:center;padding:28px;border-top:1px solid #34304b;color:#aaa}
+@media(max-width:520px){header{padding:16px 5%}section{padding:35px 5%}.hero{padding:55px 18px}}
+</style>
+</head>
+
+<body>
+<header>
+  <a href="#" class="logo">VARFI.</a>
+  <nav>
+    <a href="#home">Home</a>
+    <a href="#stories">Stories</a>
+    <a href="#add">Add Story</a>
+    <button onclick="showAuth()">Sign In / Sign Up</button>
+  </nav>
+</header>
+
+<main>
+<section class="hero" id="home">
+  <p class="meta">WELCOME TO VARFI</p>
+  <h1>Every Story Has<br><span>A World Inside.</span></h1>
+  <p>Hi there, it's VARFI's official website. Anyone can add a creative story to it. Discover new adventures, explore imaginary worlds, and share your creativity with readers.</p>
+  <a href="#stories"><button>Explore Stories ↓</button></a>
+  <a href="#add"><button>＋ Add Your Story</button></a>
+</section>
+
+<section id="stories">
+  <h2>📚 Discover Stories</h2>
+  <p class="meta">Read a story, or share your own imagination.</p>
+  <div class="tools">
+    <input id="search" type="search" placeholder="Search stories..." oninput="renderStories()">
+    <select id="category" onchange="renderStories()" style="width:auto;margin:0">
+      <option value="">All categories</option>
+      <option>Fantasy</option><option>Action</option><option>Mystery</option>
+      <option>Science Fiction</option><option>Adventure</option><option>Other</option>
+    </select>
+  </div>
+  <div id="storyGrid" class="grid"></div>
+  <p id="empty" class="note hidden">No stories found. Try another search!</p>
+  <p class="note">Demo note: stories and likes on this version are saved in this browser only.</p>
+</section>
+
+<section id="add">
+  <div class="panel">
+    <h2>✍️ Add Your Creative Story</h2>
+    <p class="meta">Your imagination belongs here!</p>
+    <form id="storyForm">
+      <label for="author">Author name</label>
+      <input id="author" maxlength="60" placeholder="Your pen name" required>
+      <label for="title">Story title</label>
+      <input id="title" maxlength="100" placeholder="Give your story a title" required>
+      <label for="genre">Category</label>
+      <select id="genre" required>
+        <option value="">Choose a category</option>
+        <option>Fantasy</option><option>Action</option><option>Mystery</option>
+        <option>Science Fiction</option><option>Adventure</option><option>Other</option>
+      </select>
+      <label for="storyText">Your story</label>
+      <textarea id="storyText" rows="8" maxlength="20000" placeholder="Once upon a time..." required></textarea>
+      <button type="submit">Publish on this browser</button>
+    </form>
+    <p class="note">Only submit writing you created or have permission to share. Do not include private information.</p>
+    <p id="storyStatus" role="status"></p>
+  </div>
+</section>
+
+<section id="account">
+  <div class="panel">
+    <h2>👋 Join VARFI</h2>
+    <p>Sign in or create an account to join the storytelling community.</p>
+    <button onclick="showAuth()">Sign In / Sign Up</button>
+    <div id="authBox" class="hidden">
+      <div class="tools">
+        <button type="button" onclick="switchAuth('signin')">Sign In</button>
+        <button type="button" onclick="switchAuth('signup')">Sign Up</button>
+      </div>
+      <form id="authForm">
+        <label for="accountName" id="nameLabel" class="hidden">Display name</label>
+        <input id="accountName" class="hidden" maxlength="60" placeholder="Your name">
+        <label for="email">Email</label>
+        <input id="email" type="email" autocomplete="email" placeholder="you@example.com" required>
+        <label for="password">Password</label>
+        <input id="password" type="password" autocomplete="current-password" minlength="8" placeholder="At least 8 characters" required>
+        <button type="submit" id="authSubmit">Sign In</button>
+      </form>
+      <p id="authStatus" role="status"></p>
+      <p class="note">Demo only: this form does not create real accounts or authenticate users. Connect a secure authentication service before launching real sign-in.</p>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <p><strong class="logo">VARFI.</strong></p>
+  <p>Stories Without Limits. Made for imagination.</p>
+  <p>© 2026 VARFI</p>
+</footer>
+
+<script>
+const KEY = "varfi_demo_stories_v1";
+const LIKE_KEY = "varfi_demo_likes_v1";
+
+const starterStories = [
+  {id:"starter1",title:"SHIN-SWORDERS",author:"VARFI Featured",genre:"Fantasy",text:"Enter a world of magical swords, extraordinary powers, cosmic mysteries, and brave guardians."},
+  {id:"starter2",title:"Cosmic Legends",author:"VARFI Featured",genre:"Science Fiction",text:"Journey beyond the stars into mysterious galaxies and unknown dimensions."},
+  {id:"starter3",title:"Mystery of the Lost Kingdom",author:"VARFI Featured",genre:"Mystery",text:"An ancient kingdom holds a secret waiting to be discovered."}
+];
+
+function loadStories(){
+  try {
+    const saved = JSON.parse(localStorage.getItem(KEY));
+    return Array.isArray(saved) ? saved : starterStories;
+  } catch { return starterStories; }
+}
+function loadLikes(){
+  try { return JSON.parse(localStorage.getItem(LIKE_KEY)) || {}; }
+  catch { return {}; }
+}
+let stories = loadStories();
+let likes = loadLikes();
+
+function saveStories(){
+  try { localStorage.setItem(KEY, JSON.stringify(stories)); return true; }
+  catch { return false; }
+}
+function renderStories(){
+  const grid = document.getElementById("storyGrid");
+  grid.replaceChildren();
+  const q = document.getElementById("search").value.toLowerCase().trim();
+  const cat = document.getElementById("category").value;
+  let count = 0;
+
+  stories.filter(s =>
+    (s.title + " " + s.author + " " + s.genre + " " + s.text).toLowerCase().includes(q) &&
+    (!cat || s.genre === cat)
+  ).forEach(s => {
+    count++;
+    const card = document.createElement("article");
+    card.className = "card";
+    const cover = document.createElement("div");
+    cover.className = "cover";
+    cover.textContent = "📖";
+    const title = document.createElement("h3");
+    title.textContent = s.title;
+    const meta = document.createElement("p");
+    meta.className = "meta";
+    meta.textContent = s.genre + " · By " + s.author;
+    const text = document.createElement("p");
+    text.textContent = s.text;
+    const button = document.createElement("button");
+    button.className = "like" + (likes[s.id] ? " liked" : "");
+    button.textContent = (likes[s.id] ? "♥ Liked" : "♡ Like") + " (" + (likes[s.id] ? 1 : 0) + ")";
+    button.setAttribute("aria-pressed", String(Boolean(likes[s.id])));
+    button.addEventListener("click", () => {
+      if (likes[s.id]) delete likes[s.id];
+      else likes[s.id] = true;
+      try { localStorage.setItem(LIKE_KEY, JSON.stringify(likes)); } catch {}
+      renderStories();
+    });
+    card.append(cover,title,meta,text,button);
+    grid.append(card);
+  });
+  document.getElementById("empty").classList.toggle("hidden", count !== 0);
+}
+
+document.getElementById("storyForm").addEventListener("submit", e => {
+  e.preventDefault();
+  const story = {
+    id: "story_" + Date.now() + "_" + Math.random().toString(36).slice(2,8),
+    author: document.getElementById("author").value.trim(),
+    title: document.getElementById("title").value.trim(),
+    genre: document.getElementById("genre").value,
+    text: document.getElementById("storyText").value.trim()
+  };
+  stories.unshift(story);
+  if (!saveStories()) {
+    stories.shift();
+    document.getElementById("storyStatus").textContent = "Storage is unavailable. Try another browser.";
+    return;
+  }
+  e.target.reset();
+  document.getElementById("storyStatus").textContent =
+    "Story saved in this browser! It is not yet shared publicly online.";
+  renderStories();
+  document.getElementById("stories").scrollIntoView({behavior:"smooth"});
+});
+
+function showAuth(){
+  const box = document.getElementById("authBox");
+  box.classList.remove("hidden");
+  switchAuth("signin");
+  document.getElementById("account").scrollIntoView({behavior:"smooth"});
+}
+function switchAuth(type){
+  const signup = type === "signup";
+  document.getElementById("accountName").classList.toggle("hidden", !signup);
+  document.getElementById("nameLabel").classList.toggle("hidden", !signup);
+  document.getElementById("accountName").required = signup;
+  document.getElementById("password").autocomplete = signup ? "new-password" : "current-password";
+  document.getElementById("authSubmit").textContent = signup ? "Create Account" : "Sign In";
+  document.getElementById("authStatus").textContent =
+    "Real account access requires secure authentication setup.";
+}
+document.getElementById("authForm").addEventListener("submit", e => {
+  e.preventDefault();
+  document.getElementById("authStatus").textContent =
+    "This is a demo form. No account was created and no password was saved.";
+});
+
+renderStories();
+</script>
+</body>
+</html>
